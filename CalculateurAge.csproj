@@ -51,5 +51,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.*" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 	</ItemGroup>
-
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifierOverride)' != ''">
+		<RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>
+	</PropertyGroup>
 </Project>

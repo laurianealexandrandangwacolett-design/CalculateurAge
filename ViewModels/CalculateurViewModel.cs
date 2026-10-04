@@ -1,4 +1,5 @@
 using System.Windows.Input;
+
 namespace CalculateurAge.ViewModels;
 
 public class CalculateurViewModel : BaseViewModel
@@ -7,6 +8,8 @@ public class CalculateurViewModel : BaseViewModel
     private DateTime _dateNaissance = DateTime.Today;
     private string _resultat = string.Empty;
     private bool _resultatVisible = false;
+    private string _message = string.Empty;          // Majeur / Mineur
+    private string _messageErreur = string.Empty;    // Date future
 
     public string Nom
     {
@@ -15,7 +18,6 @@ public class CalculateurViewModel : BaseViewModel
         {
             if (SetProperty(ref _nom, value))
             {
-                // Met à jour l’état du bouton
                 ((RelayCommand)CalculerCommand).RaiseCanExecuteChanged();
             }
         }
@@ -39,11 +41,25 @@ public class CalculateurViewModel : BaseViewModel
         set => SetProperty(ref _resultatVisible, value);
     }
 
+    public string Message
+    {
+        get => _message;
+        set => SetProperty(ref _message, value);
+    }
+
+    public string MessageErreur
+    {
+        get => _messageErreur;
+        set => SetProperty(ref _messageErreur, value);
+    }
+
     public ICommand CalculerCommand { get; }
+    public ICommand EffacerCommand { get; }
 
     public CalculateurViewModel()
     {
         CalculerCommand = new RelayCommand(Calculer, PeutCalculer);
+        EffacerCommand = new RelayCommand(Effacer);
     }
 
     private bool PeutCalculer()
@@ -53,12 +69,41 @@ public class CalculateurViewModel : BaseViewModel
 
     private async void Calculer()
     {
+        // Réinitialiser les messages
+        MessageErreur = string.Empty;
+        Message = string.Empty;
+        ResultatVisible = false;
+
+        // Fonctionnalité 3 : Refus date future
+        if (DateNaissance.Date > DateTime.Today)
+        {
+            MessageErreur = "La date de naissance ne peut pas être dans le futur !";
+            return;
+        }
+
         int age = DateTime.Today.Year - DateNaissance.Year;
 
         if (DateNaissance.Date > DateTime.Today.AddYears(-age))
             age--;
 
-        // Navigation vers ResultatPage
+        Resultat = $"{Nom}, vous avez {age} ans.";
+        ResultatVisible = true;
+
+        // Fonctionnalité 1 : Majeur / Mineur
+        Message = age >= 18 ? "Majeur" : "Mineur";
+
+        // Navigation (tu peux commenter cette ligne si tu veux rester sur la même page)
         await Shell.Current.GoToAsync($"ResultatPage?Nom={Nom}&Age={age}");
+    }
+
+    // Fonctionnalité 2 : Effacer
+    private void Effacer()
+    {
+        Nom = string.Empty;
+        DateNaissance = DateTime.Today;
+        Resultat = string.Empty;
+        ResultatVisible = false;
+        Message = string.Empty;
+        MessageErreur = string.Empty;
     }
 }

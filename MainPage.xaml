@@ -20,11 +20,38 @@
         <DatePicker Date="{Binding DateNaissance}"
                     FontSize="16"/>
 
+        <!-- Bouton Calculer -->
         <Button Text="Calculer"
                 Command="{Binding CalculerCommand}"
                 FontSize="18"
                 BackgroundColor="#512BD4"
                 TextColor="White"/>
+
+        <!-- Bouton Effacer -->
+        <Button Text="Effacer"
+                Command="{Binding EffacerCommand}"
+                FontSize="18"
+                BackgroundColor="#E74C3C"
+                TextColor="White"/>
+
+        <!-- Message d'erreur date future -->
+        <Label Text="{Binding MessageErreur}"
+               TextColor="Red"
+               FontSize="16"
+               FontAttributes="Bold"/>
+
+        <!-- Résultat -->
+        <Label Text="{Binding Resultat}"
+               FontSize="20"
+               FontAttributes="Bold"
+               IsVisible="{Binding ResultatVisible}"/>
+
+        <!-- Majeur / Mineur -->
+        <Label Text="{Binding Message}"
+               FontSize="22"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               IsVisible="{Binding ResultatVisible}"/>
 
     </VerticalStackLayout>
 
