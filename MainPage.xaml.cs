@@ -7,23 +7,21 @@ public partial class MainPage : ContentPage
         InitializeComponent();
     }
 
-    private async void OnCalculerClicked(object? sender, EventArgs e)
+   private async void OnCalculerClicked(object? sender, EventArgs e)
+{
+    if (string.IsNullOrWhiteSpace(entryNom.Text))
     {
-        if (string.IsNullOrWhiteSpace(entryNom.Text))
-        {
-            await DisplayAlertAsync("Erreur", "Entrez un nom", "OK");
-            return;
-        }
-
-        // DatePicker.Date est maintenant DateTime?
-        DateTime d = pickerDate.Date ?? DateTime.Today;
-
-        int age = DateTime.Today.Year - d.Year;
-
-        if (d.Date > DateTime.Today.AddYears(-age))
-            age--;
-
-        lblResultat.Text = $"{entryNom.Text}, vous avez {age} ans.";
-        lblResultat.IsVisible = true;
+        await DisplayAlertAsync("Erreur", "Entrez un nom", "OK");
+        return;
     }
+
+    DateTime d = pickerDate.Date ?? DateTime.Today;
+    int age = DateTime.Today.Year - d.Year;
+
+    if (d.Date > DateTime.Today.AddYears(-age))
+        age--;
+
+    // Navigation vers ResultatPage
+    await Shell.Current.GoToAsync($"ResultatPage?Nom={entryNom.Text}&Age={age}");
+}
 }
